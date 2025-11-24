@@ -10,8 +10,8 @@
  *   - 預設顯示本月的日曆，點擊可以選擇日期，再點擊一次可以取消選擇，已選的日期會高亮顯示。
  *   - 提供一個按鈕可以切換當月/上個月的日曆顯示。
  * - JSON 輸出操作區塊：
- *   - 提供一個按鈕將已選的日期以 JSON 格式儲存在本地的 selected-date 資料夾中。
- *   - 輸出檔名模板為 `YYYY-MM-DD-selected-dates.json`，內容為已選日期的陣列。
+ *   - 提供一個按鈕將已選的日期以 JSON 格式下載到本地。
+ *   - 輸出檔名固定為 `selected-dates.json`，內容為已選日期的陣列。
 -->
 <!DOCTYPE html>
 <html lang="zh-TW">
@@ -185,7 +185,7 @@
                     <li class="mb-2">• 點擊日期可以選擇，再次點擊可以取消</li>
                     <li class="mb-2">• 使用「上個月」和「本月」按鈕切換月份</li>
                     <li class="mb-2">• 選擇完成後點擊「匯出 JSON 檔案」儲存</li>
-                    <li class="mb-0">• 檔案名稱格式：YYYY-MM-DD-selected-dates.json</li>
+                    <li class="mb-0">• 檔案名稱：selected-dates.json</li>
                   </ul>
                 </div>
               </div>
@@ -345,8 +345,7 @@
 
         exportJson() {
           const selectedArray = Array.from(this.selectedDates).sort()
-          const exportDate = new Date().toISOString().split('T')[0]
-          const filename = `${exportDate}-selected-dates.json`
+          const filename = 'selected-dates.json'
 
           const jsonData = {
             selectedDates: selectedArray,
