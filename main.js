@@ -84,7 +84,7 @@ async function performClockIn(page, config, clockInInfo) {
 
     // 前往打卡頁面
     await page.goto(config.webUrl)
-    await page.waitForLoadState('networkidle')
+    await page.waitForURL(config.webUrl)
 
     // 輸入 ID
     const idInput = page.getByRole('textbox', { name: 'ID Number' })
@@ -99,9 +99,10 @@ async function performClockIn(page, config, clockInInfo) {
     // 輸入日期
     await page.locator('#txtDate').click()
     const datePicker = page.locator('.ui-datepicker-calendar')
-    await datePicker
-      .getByRole('link', { name: new Date(clockInInfo.date).getDate().toString() })
-      .click()
+    await datePicker.waitFor({ state: 'visible' })
+
+    const targetDate = new Date(clockInInfo.date).getDate().toString()
+    await datePicker.getByRole('link', { name: targetDate, exact: true }).click()
 
     // 輸入時
     const hourInput = page.locator('#txtHour')
