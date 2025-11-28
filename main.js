@@ -1,6 +1,38 @@
+require('dotenv').config()
 const { chromium } = require('playwright')
 const fs = require('fs')
 const path = require('path')
+
+/**
+ * 從環境變數讀取設定
+ * @returns {Object} 設定物件
+ */
+function loadConfig() {
+  const requiredEnvVars = [
+    'CLOCK_IN_URL',
+    'USER_ID',
+    'USER_PASSWORD',
+    'TIME_RANGE_START',
+    'TIME_RANGE_END',
+  ]
+  const missing = requiredEnvVars.filter((varName) => !process.env[varName])
+
+  if (missing.length > 0) {
+    throw new Error(`缺少必要的環境變數: ${missing.join(', ')}。請確認 .env 檔案已正確設定。`)
+  }
+
+  return {
+    webUrl: process.env.CLOCK_IN_URL,
+    range: {
+      start: process.env.TIME_RANGE_START,
+      end: process.env.TIME_RANGE_END,
+    },
+    user: {
+      id: process.env.USER_ID,
+      pwd: process.env.USER_PASSWORD,
+    },
+  }
+}
 
 /**
  * 讀取 JSON 檔案
@@ -209,23 +241,14 @@ async function main() {
     console.log('=== 自動打卡程式啟動 ===\n')
 
     // 步驟1: 讀取設定檔
-    console.log('正在讀取設定檔...')
+    console.log('正在讀取環境變數設定...')
 
-    // 讀取整合設定檔
-    const configPath = path.join(__dirname, 'config.json')
-    const config = readJsonFile(configPath)
+    // 從環境變數讀取設定
+    const config = loadConfig()
 
-    if (!config.user || !config.user.id || !config.user.pwd) {
-      throw new Error('config.json 中缺少使用者資料 (user.id 或 user.pwd)，請確認檔案內容')
-    }
-
-    if (!config.range || !config.range.start || !config.range.end) {
-      throw new Error('config.json 中缺少時間範圍設定 (range.start 或 range.end)')
-    }
-
-    if (!config.webUrl) {
-      throw new Error('config.json 中缺少網址設定 (webUrl)')
-    }
+    console.log(`打卡網址: ${config.webUrl}`)
+    console.log(`使用者 ID: ${config.user.id}`)
+    console.log(`時間範圍: ${config.range.start} - ${config.range.end}`)
 
     // 讀取打卡日期
     const selectDateFilePath = path.join(__dirname, 'selected-dates.json')
@@ -335,6 +358,7 @@ if (require.main === module) {
 
 module.exports = {
   main,
+  loadConfig,
   readJsonFile,
   getRandomTime,
   prepareTempClockInList,

@@ -1,6 +1,10 @@
 node_modules
 
-# 設定檔
+# 環境變數設定檔
+.env
+!.env.example
+
+# 舊的設定檔 (已改用 .env)
 config.json
 !config.example.json
 
