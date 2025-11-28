@@ -34,6 +34,16 @@ USER_PASSWORD=你的密碼
 # 打卡時間範圍 (格式: HH:mm)
 TIME_RANGE_START=08:30
 TIME_RANGE_END=09:00
+
+# 瀏覽器設定
+# 是否隱藏瀏覽器視窗 (true/false)
+BROWSER_HEADLESS=false
+# 每個操作間隔毫秒數，便於觀察 (建議: 1000)
+BROWSER_SLOW_MO=1000
+
+# 打卡間隔設定
+# 每次打卡之間的等待時間(毫秒) (建議: 3000)
+WAIT_BETWEEN_CLOCK_IN=3000
 ```
 
 **環境變數說明：**
@@ -43,6 +53,9 @@ TIME_RANGE_END=09:00
 - `USER_PASSWORD`: 您的登入密碼
 - `TIME_RANGE_START`: 打卡時間範圍的開始時間
 - `TIME_RANGE_END`: 打卡時間範圍的結束時間
+- `BROWSER_HEADLESS`: 是否隱藏瀏覽器視窗（true=隱藏，false=顯示）
+- `BROWSER_SLOW_MO`: 每個操作間隔毫秒數，數值越大執行越慢，便於觀察過程
+- `WAIT_BETWEEN_CLOCK_IN`: 每次打卡之間的等待時間（毫秒），避免過於頻繁的請求
 
 > **⚠️ 重要提醒**: `.env` 檔案包含敏感資訊，已設定於 `.gitignore` 中，不會被版本控制系統追蹤。
 

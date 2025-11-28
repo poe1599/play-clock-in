@@ -21,6 +21,11 @@ function loadConfig() {
     throw new Error(`缺少必要的環境變數: ${missing.join(', ')}。請確認 .env 檔案已正確設定。`)
   }
 
+  // 瀏覽器設定 (可選，有預設值)
+  const headless = process.env.BROWSER_HEADLESS === 'true'
+  const slowMo = parseInt(process.env.BROWSER_SLOW_MO) || 1000
+  const waitBetweenClockIn = parseInt(process.env.WAIT_BETWEEN_CLOCK_IN) || 3000
+
   return {
     webUrl: process.env.CLOCK_IN_URL,
     range: {
@@ -31,6 +36,11 @@ function loadConfig() {
       id: process.env.USER_ID,
       pwd: process.env.USER_PASSWORD,
     },
+    browser: {
+      headless: headless,
+      slowMo: slowMo,
+    },
+    waitBetweenClockIn: waitBetweenClockIn,
   }
 }
 
@@ -273,9 +283,11 @@ async function main() {
 
     // 步驟3: 啟動瀏覽器
     console.log('\n正在啟動瀏覽器...')
+    console.log(`瀏覽器模式: ${config.browser.headless ? '無頭模式' : '視窗模式'}`)
+    console.log(`操作間隔: ${config.browser.slowMo}ms`)
     browser = await chromium.launch({
-      headless: false, // 設為 true 可隱藏瀏覽器視窗
-      slowMo: 1000, // 每個操作間隔 1 秒，便於觀察
+      headless: config.browser.headless,
+      slowMo: config.browser.slowMo,
     })
 
     const context = await browser.newContext()
@@ -296,8 +308,8 @@ async function main() {
 
       // 在每次打卡之間稍作休息
       if (i < tempClockInList.length - 1) {
-        console.log('等待 3 秒後繼續下一個...')
-        await page.waitForTimeout(3000)
+        console.log(`等待 ${config.waitBetweenClockIn / 1000} 秒後繼續下一個...`)
+        await page.waitForTimeout(config.waitBetweenClockIn)
       }
     }
 
