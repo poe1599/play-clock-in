@@ -2,7 +2,7 @@
  * @Author: AllenYeh Allen_Yeh@systemweb.com.tw
  * @Date: 2025-11-24 10:37:48
  * @LastEditors: AllenYeh Allen_Yeh@systemweb.com.tw
- * @LastEditTime: 2025-11-24 11:03:44
+ * @LastEditTime: 2025-11-28 11:15:12
  * @FilePath: \play-clock-in\select-date.html
  * @Description: 打卡日期選擇頁
  * 畫面顯示一個日期選擇區塊與 JSON 輸出操作區塊。
@@ -312,7 +312,9 @@
         }
 
         formatDate(date) {
-          return date.toISOString().split('T')[0]
+          return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+            date.getDate(),
+          ).padStart(2, '0')}`
         }
 
         updateDisplay() {
